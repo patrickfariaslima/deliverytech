@@ -1,3 +1,4 @@
+
 # Delivery Tech API
 Sistema de delivery desenvolvido com Spring Boot e Java 21.
 
@@ -15,18 +16,22 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 - Pattern Matching (Java 17+)
 - Virtual Threads (Java 21)
 
-## 🏃‍♂️ Como Executar
+## 🏃‍♂️ Como executar
 1. **Pré-requisitos:** JDK 21 instalado
 2. Clone o repositório
 3. Execute: `./mvnw spring-boot:run`
 4. Acesse: http://localhost:8080/health
 
-## 📋Endpoints
+## 📋 Endpoints
 - GET /health - Status da aplicação (inclui versão Java)
-- GET /info - Informações d aplicação
+- GET /info - Informações da aplicação
 - GET /h2-console - Console do banco H2
 
 ## 🔧 Configuração
 - Porta: 8080
 - Banco: H2 em memória
 - Profile: development
+
+## 👨‍💻 Desenvolvedor
+Patrick Farias Lima - Turma 2602
+Desenvolvido com JDK 21 e Spring Boot 3.5.9
