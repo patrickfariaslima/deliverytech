@@ -9,7 +9,13 @@ import com.deliverytech.delivery_api.model.Restaurant;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-    List<Restaurant> findByActiveTrue();
     List<Restaurant> findByCategory(String category);
+
+    List<Restaurant> findByActiveTrue();
+
     List<Restaurant> findByActiveTrueOrderByRatingDesc();
+
+    List<Restaurant> findByNameContainingIgnoreCase(String name);
+
+    List<Restaurant> findByCategoryAndActiveTrue(String category);
 }

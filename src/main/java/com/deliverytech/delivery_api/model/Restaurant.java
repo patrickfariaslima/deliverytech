@@ -40,9 +40,9 @@ public class Restaurant {
 
     private Boolean active;
 
-    @OneToMany(mappedBy = "restaurants", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurants", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 }

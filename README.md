@@ -35,3 +35,6 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 ## 👨‍💻 Desenvolvedor
 Patrick Farias Lima - Turma 2602 - Arquitetura de sistema
 Desenvolvido com JDK 21 e Spring Boot 3.5.9
+
+## 💻 Repositório GitHub
+https://github.com/patrickfariaslima/deliverytech

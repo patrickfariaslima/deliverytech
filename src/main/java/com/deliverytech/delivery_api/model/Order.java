@@ -57,6 +57,6 @@ public class Order {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "order")
     private List<OrderedItem> items = new ArrayList<>();
 }

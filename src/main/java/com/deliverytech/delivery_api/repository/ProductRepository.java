@@ -9,9 +9,11 @@ import com.deliverytech.delivery_api.model.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>{
-    List<Product> findByRestaurant(Long restaurantId);
+    List<Product> findByRestaurantId(Long restaurantId);
 
     List<Product> findByCategory(String category);
 
     List<Product> findByAvailableTrue();
+
+    List<Product> findByRestaurantIdAndAvailableTrue(Long restaurantId);
 }
