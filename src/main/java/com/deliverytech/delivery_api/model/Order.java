@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.deliverytech.delivery_api.enums.OrdersStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,12 +52,15 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @JsonIgnore
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
     private Restaurant restaurant;
 
     @OneToMany(mappedBy = "order")
+    @JsonIgnore
     private List<OrderedItem> items = new ArrayList<>();
 }

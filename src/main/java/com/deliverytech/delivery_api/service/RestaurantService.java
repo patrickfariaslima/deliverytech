@@ -47,7 +47,7 @@ public class RestaurantService {
         return repository.findByCategoryAndActiveTrue(category);
     }
 
-    private Restaurant getRestaurantById(Long id) {
+    public Restaurant getRestaurantById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurant not found with id: " + id));
     }
