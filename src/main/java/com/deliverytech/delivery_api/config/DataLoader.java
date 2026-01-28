@@ -61,13 +61,13 @@ public class DataLoader {
             r1.setActive(true);
 
             Restaurant r2 = new Restaurant();
-            r1.setName("Burger House");
-            r1.setCategory("Hamburgueria");
-            r1.setAddress("Rua Augusta, 500 - São Paulo/SP");
-            r1.setPhoneNumber("11999998888");
-            r1.setRating(new BigDecimal("4.0"));
-            r1.setDeliveryFee(new BigDecimal("8.00"));
-            r1.setActive(true);
+            r2.setName("Burger House");
+            r2.setCategory("Hamburgueria");
+            r2.setAddress("Rua Augusta, 500 - São Paulo/SP");
+            r2.setPhoneNumber("11999998888");
+            r2.setRating(new BigDecimal("4.0"));
+            r2.setDeliveryFee(new BigDecimal("8.00"));
+            r2.setActive(true);
 
             restaurantRepository.saveAll(Arrays.asList(r1, r2));
 

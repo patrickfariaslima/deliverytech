@@ -32,7 +32,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
             select new com.deliverytech.delivery_api.dto.TotalSalesByRestaurantDTO(
                     r.name,
-                    coalesce(sum(ip.subtotal), 0)
+                    coalesce(sum(ip.total), 0)
                 )
                 from Order o
                 join o.restaurant r
@@ -42,9 +42,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<TotalSalesByRestaurantDTO> TotalSalesByRestaurant();
 
     @Query(value="""
-        SELECT c.name AS client, COUNT(p.id) AS total_orders
+        SELECT c.name AS client, COUNT(o.id) AS total_orders
         FROM orders o 
-        JOIN clients c ON c.id = p.client_id
+        JOIN clients c ON c.id = o.client_id
         GROUP BY c.name
         ORDER BY total_orders DESC
     """, nativeQuery = true )
