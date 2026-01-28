@@ -1,22 +1,30 @@
 package com.deliverytech.delivery_api.config;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.deliverytech.delivery_api.enums.OrdersStatus;
 import com.deliverytech.delivery_api.model.Client;
+import com.deliverytech.delivery_api.model.Order;
+import com.deliverytech.delivery_api.model.OrderedItem;
 import com.deliverytech.delivery_api.model.Product;
 import com.deliverytech.delivery_api.model.Restaurant;
-import com.deliverytech.delivery_api.repository.ClientRepository;
-import com.deliverytech.delivery_api.repository.OrderRepository;
-import com.deliverytech.delivery_api.repository.ProductRepository;
-import com.deliverytech.delivery_api.repository.RestaurantRepository;
+import com.deliverytech.delivery_api.repository.*;
 
 @Configuration
 public class DataLoader {
+
+    private final OrderedItemRepository orderedItemRepository;
+
+    DataLoader(OrderedItemRepository orderedItemRepository) {
+        this.orderedItemRepository = orderedItemRepository;
+    }
     @Bean
     public CommandLineRunner initData(
         ClientRepository clientRepository,
@@ -40,9 +48,6 @@ public class DataLoader {
             client2.setPhoneNumber("11912345678");
             client2.setAddress("Avenida Brasil, 456, Rio de Janeiro, RJ");
             client2.setActive(true);
-
-/*             clientRepository.save(client1);
-            clientRepository.save(client2); */
 
             clientRepository.saveAll(Arrays.asList(client1, client2));
 
@@ -82,7 +87,51 @@ public class DataLoader {
             p2.setAvailable(true);
             p2.setRestaurant(r2);
 
-            productRepository.saveAll(Arrays.asList(p1, p2));
+            List<Product> products = new ArrayList<>();
+            products.add(p1);
+            products.add(p2);
+            productRepository.saveAll(products);
+
+            Order order1 = new Order();
+            order1.setClient(client1);
+            order1.setRestaurant(r1);
+            order1.setStatus(OrdersStatus.PENDING);
+            order1.setDeliveryAddress(client1.getAddress());
+            order1.setOrderNumber("PED1234567890");
+            order1.setTotal(BigDecimal.ZERO);
+
+            orderRepository.save(order1);
+
+            Order order2 = new Order();
+            order2.setClient(client2);
+            order2.setRestaurant(r2);
+            order2.setStatus(OrdersStatus.PENDING);
+            order2.setDeliveryAddress(client2.getAddress());
+            order2.setOrderNumber("PED1234567891");
+            order2.setTotal(BigDecimal.ZERO);
+
+            orderRepository.save(order2);
+
+
+            OrderedItem item1 = new OrderedItem();
+            item1.setProduct(p1);
+            item1.setOrder(order1);
+            item1.setQuantity(2);
+            item1.setItemPrice(p1.getPrice());
+            item1.setTotal(p1.getPrice().multiply(new BigDecimal(item1.getQuantity())));
+
+            orderedItemRepository.save(item1);
+
+            OrderedItem item2 = new OrderedItem();
+            item2.setProduct(p2);
+            item2.setOrder(order2);
+            item2.setQuantity(5);
+            item2.setItemPrice(p2.getPrice());
+            item2.setTotal(p2.getPrice().multiply(new BigDecimal(item2.getQuantity())));
+
+            orderedItemRepository.save(item2);
+
+            System.out.println("Carregamento de dados concluído.");
         };
     }
 }
