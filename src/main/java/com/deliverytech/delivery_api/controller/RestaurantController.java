@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.deliverytech.delivery_api.model.Restaurant;
+import com.deliverytech.delivery_api.dto.request.RestaurantDTO;
+import com.deliverytech.delivery_api.dto.response.RestaurantResponseDTO;
 import com.deliverytech.delivery_api.service.RestaurantService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,17 +25,17 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<RestaurantResponseDTO> createRestaurant(@RequestBody RestaurantDTO restaurant) {
         return ResponseEntity.status(201).body(restaurantService.createRestaurant(restaurant));
     }
 
     @GetMapping("/listar")
-    public List<Restaurant> getActiveRestaurants() {
+    public List<RestaurantResponseDTO> getActiveRestaurants() {
         return restaurantService.getActiveRestaurants();
     }
 
     @GetMapping("/{id}")
-    public Restaurant getRestaurantById(@PathVariable Long id) {
+    public RestaurantResponseDTO getRestaurantById(@PathVariable Long id) {
         return restaurantService.getRestaurantById(id);
     }
 

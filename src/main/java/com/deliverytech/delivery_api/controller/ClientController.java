@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverytech.delivery_api.model.Client;
+import com.deliverytech.delivery_api.dto.request.ClientDTO;
+import com.deliverytech.delivery_api.dto.response.ClientResponseDTO;
 import com.deliverytech.delivery_api.service.ClientService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,25 +27,23 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody Client client) {
+    public ResponseEntity<ClientResponseDTO> createClient(@RequestBody ClientDTO client) {
         return ResponseEntity.status(201).body(clientService.createClient((client)));
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Client>> getActiveClients() {
+    public ResponseEntity<List<ClientResponseDTO>> getActiveClients() {
         return ResponseEntity.ok(clientService.getActiveClients());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable String id) {
-        Client client = clientService.getClientById(Long.parseLong(id));
-        return ResponseEntity.ok(client);
+    public ResponseEntity<ClientResponseDTO> getClientById(@PathVariable String id) {
+        return ResponseEntity.ok(clientService.getClientById(Long.parseLong(id)));
     }
 
     @PutMapping("/{id}")
-    public Client updateClient(@PathVariable String id, @RequestBody Client client) {
-        Client updatedClient = clientService.updateClient(Long.parseLong(id), client);
-        return updatedClient;
+    public ResponseEntity<ClientResponseDTO> updateClient(@PathVariable String id, @RequestBody ClientDTO client) {
+        return ResponseEntity.ok(clientService.updateClient(Long.parseLong(id), client));
     }
 
     @PatchMapping("/{id}/inativar")
@@ -54,7 +53,7 @@ public class ClientController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<List<Client>> getClientByName(@RequestParam String name) {
+    public ResponseEntity<List<ClientResponseDTO>> getClientByName(@RequestParam String name) {
         return ResponseEntity.ok(clientService.getClientByName(name));
     }
 }

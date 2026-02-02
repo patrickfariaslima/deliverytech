@@ -18,4 +18,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByNameContainingIgnoreCase(String name);
 
     List<Restaurant> findByCategoryAndActiveTrue(String category);
+
+    Restaurant getById(Long id);
+
+    boolean existsByName(String name);
 }
