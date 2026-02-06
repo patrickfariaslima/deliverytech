@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,7 @@ import com.deliverytech.delivery_api.repository.*;
 
 @Configuration
 public class DataLoader {
-
+    private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
     private final OrderedItemRepository orderedItemRepository;
 
     DataLoader(OrderedItemRepository orderedItemRepository) {
@@ -33,7 +35,7 @@ public class DataLoader {
         OrderRepository orderRepository
     ) {
         return args -> {
-            System.out.println("Iniciando carregamento de dados...");
+            log.info("Iniciando carregamento de dados...");
 
             Client client1 = new Client();
             client1.setName("Raiel Landre");
@@ -58,17 +60,25 @@ public class DataLoader {
 
             clientRepository.saveAll(Arrays.asList(client1, client2, client3));
 
-            System.out.println("Clientes ativos:");
-            clientRepository.findByActiveTrue()
-                .forEach(client -> System.out.println(" - " + client.getId() + " | " + client.getName()));
+            String activeClients = String.join(
+                System.lineSeparator(),
+                clientRepository.findByActiveTrue().stream()
+                    .map(client -> " - " + client.getId() + " | " + client.getName())
+                    .toList()
+            );
+            log.info("\nClientes ativos:{}{}", System.lineSeparator(), activeClients);
 
-            System.out.println("Clientes com 'a' no nome:");
-            clientRepository.findByNameContainingIgnoreCase("a")
-                .forEach(client -> System.out.println(" - " + client.getId() + " | " + client.getName()));
+            String clientsWithA = String.join(
+                System.lineSeparator(),
+                clientRepository.findByNameContainingIgnoreCase("a").stream()
+                    .map(client -> " - " + client.getId() + " | " + client.getName())
+                    .toList()
+            );
+            log.info("\nClientes com 'a' no nome:{}{}", System.lineSeparator(), clientsWithA);
 
 
             Restaurant r1 = new Restaurant();
-            r1.setName("Pizza");
+            r1.setName("Pizza Mania");
             r1.setCategory("Pizzaria");
             r1.setAddress("Rua das Pizzas, 100, São Paulo, SP");
             r1.setPhoneNumber("11999998888");
@@ -87,25 +97,45 @@ public class DataLoader {
 
             restaurantRepository.saveAll(Arrays.asList(r1, r2));
 
-            System.out.println("Restaurantes ativos:");
-            restaurantRepository.findByActiveTrue()
-                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+            String activeRestaurants = String.join(
+                System.lineSeparator(),
+                restaurantRepository.findByActiveTrue().stream()
+                    .map(restaurant -> " - " + restaurant.getId() + " | " + restaurant.getName())
+                    .toList()
+            );
+            log.info("\nRestaurantes ativos:{}{}", System.lineSeparator(), activeRestaurants);
 
-            System.out.println("Restaurantes taxa <= 6:");
-            restaurantRepository.findByDeliveryFeeLessThanEqual(new BigDecimal("6.00"))
-                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+            String restaurantsByFee = String.join(
+                System.lineSeparator(),
+                restaurantRepository.findByDeliveryFeeLessThanEqual(new BigDecimal("6.00")).stream()
+                    .map(restaurant -> " - " + restaurant.getId() + " | " + restaurant.getName())
+                    .toList()
+            );
+            log.info("\nRestaurantes taxa <= 6:{}{}", System.lineSeparator(), restaurantsByFee);
 
-            System.out.println("Top 5 por nome:");
-            restaurantRepository.findTop5ByOrderByNameAsc()
-                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+            String topRestaurantsByName = String.join(
+                System.lineSeparator(),
+                restaurantRepository.findTop5ByOrderByNameAsc().stream()
+                    .map(restaurant -> " - " + restaurant.getId() + " | " + restaurant.getName())
+                    .toList()
+            );
+            log.info("\nTop 5 por nome:{}{}", System.lineSeparator(), topRestaurantsByName);
 
-            System.out.println("Restaurantes por categoria Pizzaria:");
-            restaurantRepository.findByCategory("Pizzaria")
-                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+            String restaurantsByCategory = String.join(
+                System.lineSeparator(),
+                restaurantRepository.findByCategory("Pizzaria").stream()
+                    .map(restaurant -> " - " + restaurant.getId() + " | " + restaurant.getName())
+                    .toList()
+            );
+            log.info("\nRestaurantes por categoria Pizzaria:{}{}", System.lineSeparator(), restaurantsByCategory);
 
-            System.out.println("Produtos por categoria Pizza:");
-            productRepository.findByCategory("Pizza")
-                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+            String productsByCategory = String.join(
+                System.lineSeparator(),
+                productRepository.findByCategory("Pizza").stream()
+                    .map(product -> " - " + product.getId() + " | " + product.getName())
+                    .toList()
+            );
+            log.info("\nProdutos por categoria Pizza:{}{}", System.lineSeparator(), productsByCategory);
 
             Product p1 = new Product();
             p1.setName("Pizza de Calabresa");
@@ -153,17 +183,29 @@ public class DataLoader {
             products.addAll(Arrays.asList(p3, p4, p5));
             productRepository.saveAll(products);
 
-            System.out.println("Produtos disponíveis:");
-            productRepository.findByAvailableTrue()
-                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+            String availableProducts = String.join(
+                System.lineSeparator(),
+                productRepository.findByAvailableTrue().stream()
+                    .map(product -> " - " + product.getId() + " | " + product.getName())
+                    .toList()
+            );
+            log.info("\nProdutos disponíveis:{}{}", System.lineSeparator(), availableProducts);
 
-            System.out.println("Produtos preço <= 30:");
-            productRepository.findByPriceLessThanEqual(new BigDecimal("30.00"))
-                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+            String productsByPrice = String.join(
+                System.lineSeparator(),
+                productRepository.findByPriceLessThanEqual(new BigDecimal("30.00")).stream()
+                    .map(product -> " - " + product.getId() + " | " + product.getName())
+                    .toList()
+            );
+            log.info("\nProdutos preço <= 30:{}{}", System.lineSeparator(), productsByPrice);
 
-            System.out.println("Produtos do restaurante r1:");
-            productRepository.findByRestaurantId(r1.getId())
-                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+            String productsByRestaurant = String.join(
+                System.lineSeparator(),
+                productRepository.findByRestaurantId(r1.getId()).stream()
+                    .map(product -> " - " + product.getId() + " | " + product.getName())
+                    .toList()
+            );
+            log.info("\nProdutos do restaurante r1:{}{}", System.lineSeparator(), productsByRestaurant);
 
 
             Order order1 = new Order();
@@ -186,9 +228,13 @@ public class DataLoader {
 
             orderRepository.save(order2);
 
-            System.out.println("Últimos 10 pedidos:");
-            orderRepository.findTop10ByOrderByOrderDateDesc()
-                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+            String lastOrders = String.join(
+                System.lineSeparator(),
+                orderRepository.findTop10ByOrderByOrderDateDesc().stream()
+                    .map(order -> " - " + order.getId() + " | " + order.getOrderNumber())
+                    .toList()
+            );
+            log.info("\nÚltimos 10 pedidos:{}{}", System.lineSeparator(), lastOrders);
 
             OrderedItem item1 = new OrderedItem();
             item1.setProduct(p1);
@@ -208,41 +254,74 @@ public class DataLoader {
 
             orderedItemRepository.save(item2);
 
-            System.out.println("Pedidos por período:");
-            orderRepository.findByOrderDateBetween(
-                java.time.LocalDateTime.now().minusDays(1),
-                java.time.LocalDateTime.now().plusDays(1)
-            ).forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+            String ordersByPeriod = String.join(
+                System.lineSeparator(),
+                orderRepository.findByOrderDateBetween(
+                    java.time.LocalDateTime.now().minusDays(1),
+                    java.time.LocalDateTime.now().plusDays(1)
+                ).stream()
+                    .map(order -> " - " + order.getId() + " | " + order.getOrderNumber())
+                    .toList()
+            );
+            log.info("\nPedidos por período:{}{}", System.lineSeparator(), ordersByPeriod);
 
-            System.out.println("Pedidos por status PENDING:");
-            orderRepository.findByStatus(OrdersStatus.PENDING)
-                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+            String ordersByStatus = String.join(
+                System.lineSeparator(),
+                orderRepository.findByStatus(OrdersStatus.PENDING).stream()
+                    .map(order -> " - " + order.getId() + " | " + order.getOrderNumber())
+                    .toList()
+            );
+            log.info("\nPedidos por status PENDING:{}{}", System.lineSeparator(), ordersByStatus);
 
-            System.out.println("Pedidos por cliente client1:");
-            orderRepository.findByClientId(client1.getId())
-                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+            String ordersByClient = String.join(
+                System.lineSeparator(),
+                orderRepository.findByClientId(client1.getId()).stream()
+                    .map(order -> " - " + order.getId() + " | " + order.getOrderNumber())
+                    .toList()
+            );
+            log.info("\nPedidos por cliente client1:{}{}", System.lineSeparator(), ordersByClient);
 
-            System.out.println("Pedidos com total > 10:");
-            orderRepository.findByTotalGreaterThan(new BigDecimal("10.00"))
-                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber() + " | " + order.getTotal()));
+            String ordersByTotal = String.join(
+                System.lineSeparator(),
+                orderRepository.findByTotalGreaterThan(new BigDecimal("10.00")).stream()
+                    .map(order -> " - " + order.getId() + " | " + order.getOrderNumber() + " | " + order.getTotal())
+                    .toList()
+            );
+            log.info("\nPedidos com total > 10:{}{}", System.lineSeparator(), ordersByTotal);
 
-            System.out.println("Total vendas por restaurante:");
-                orderRepository.totalSalesByRestaurant()
-                    .forEach(report -> System.out.println(" - " + report.getRestaurant() + " | " + report.getTotalSales()));
+            String salesByRestaurant = String.join(
+                System.lineSeparator(),
+                orderRepository.totalSalesByRestaurant().stream()
+                    .map(report -> " - " + report.getRestaurant() + " | " + report.getTotalSales())
+                    .toList()
+            );
+            log.info("\nTotal vendas por restaurante:{}{}", System.lineSeparator(), salesByRestaurant);
 
-            System.out.println("Top produtos:");
-            orderRepository.topProducts()
-                .forEach(report -> System.out.println(" - " + report.getProductName() + " | " + report.getTotalOrders()));
+            String topProducts = String.join(
+                System.lineSeparator(),
+                orderRepository.topProducts().stream()
+                    .map(report -> " - " + report.getProductName() + " | " + report.getTotalOrders())
+                    .toList()
+            );
+            log.info("\nTop produtos:{}{}", System.lineSeparator(), topProducts);
 
-            System.out.println("Faturamento por categoria:");
-            orderRepository.revenueByCategory()
-                .forEach(report -> System.out.println(" - " + report.getCategory() + " | " + report.getTotalRevenue()));
+            String revenueByCategory = String.join(
+                System.lineSeparator(),
+                orderRepository.revenueByCategory().stream()
+                    .map(report -> " - " + report.getCategory() + " | " + report.getTotalRevenue())
+                    .toList()
+            );
+            log.info("\nFaturamento por categoria:{}{}", System.lineSeparator(), revenueByCategory);
 
-            System.out.println("Ranking clientes:");
-            orderRepository.rankingClients()
-                .forEach(report -> System.out.println(" - " + report.getClientName() + " | " + report.getTotalOrders()));
+            String rankingClients = String.join(
+                System.lineSeparator(),
+                orderRepository.rankingClients().stream()
+                    .map(report -> " - " + report.getClientName() + " | " + report.getTotalOrders())
+                    .toList()
+            );
+            log.info("\nRanking clientes:{}{}", System.lineSeparator(), rankingClients);
 
-            System.out.println("Carregamento de dados concluído.");
+            log.info("\nCarregamento de dados concluído.");
             
         };
     }
