@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Restaurant getById(Long id);
 
     boolean existsByName(String name);
+
+    List<Restaurant> findByDeliveryFeeLessThanEqual(BigDecimal deliveryFee);
+
+    List<Restaurant> findTop5ByOrderByNameAsc();
 }

@@ -3,7 +3,8 @@ package com.deliverytech.delivery_api.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverytech.delivery_api.model.Product;
+import com.deliverytech.delivery_api.dto.request.ProductDTO;
+import com.deliverytech.delivery_api.dto.response.ProductResponseDTO;
 import com.deliverytech.delivery_api.service.ProductService;
 
 import java.util.List;
@@ -26,17 +27,17 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getByProductId(@PathVariable Long id) {
+    public ResponseEntity<ProductResponseDTO> getByProductId(@PathVariable Long id) {
         return ResponseEntity.status(200).body(productService.getProductById(id));
     }
 
     @PostMapping("/{restaurantId}")
-    public ResponseEntity<Product> createProduct(@PathVariable Long restaurantId, @RequestBody Product newProduct) {
+    public ResponseEntity<ProductResponseDTO> createProduct(@PathVariable Long restaurantId, @RequestBody ProductDTO newProduct) {
         return ResponseEntity.status(201).body(productService.createProduct(restaurantId, newProduct));
     }
 
     @GetMapping("/restaurante/{restaurantId}")
-    public ResponseEntity<List<Product>> getProductsByRestaurant(@PathVariable Long restaurantId) {
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByRestaurant(@PathVariable Long restaurantId) {
         return ResponseEntity.status(200).body(productService.getProductsByRestaurant(restaurantId));
     }
     

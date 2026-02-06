@@ -3,8 +3,13 @@ package com.deliverytech.delivery_api.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.deliverytech.delivery_api.dto.request.ProductDTO;
+import com.deliverytech.delivery_api.dto.response.ProductResponseDTO;
+import com.deliverytech.delivery_api.exceptions.BusinessException;
+import com.deliverytech.delivery_api.exceptions.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Product;
 import com.deliverytech.delivery_api.model.Restaurant;
 import com.deliverytech.delivery_api.repository.ProductRepository;
@@ -17,32 +22,48 @@ import jakarta.transaction.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
+    private final ModelMapper mapper;
 
-    public ProductService(ProductRepository productRepository, RestaurantRepository restaurantRepository) {
+    public ProductService(ProductRepository productRepository, RestaurantRepository restaurantRepository, ModelMapper mapper) {
         this.productRepository = productRepository;
         this.restaurantRepository = restaurantRepository;
+        this.mapper = mapper;
     }
 
-    public Product createProduct(Long restaurantId, Product product) {
-        if(product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Price must be greater than zero");
+    public ProductResponseDTO createProduct(Long restaurantId, ProductDTO product) {
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("Price must be greater than zero");
         }
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
 
-        product.setAvailable(true);
-        product.setRestaurant(restaurant);
+        Product newProduct = mapper.map(product, Product.class);
+        newProduct.setAvailable(true);
+        newProduct.setRestaurant(restaurant);
 
-        return productRepository.save(product);
+        Product saved = productRepository.save(newProduct);
+        return toResponse(saved);
     }
 
-    public List<Product> getProductsByRestaurant(Long restaurantId) {
-        return productRepository.findByRestaurantId(restaurantId);
+    public List<ProductResponseDTO> getProductsByRestaurant(Long restaurantId) {
+        List<Product> products = productRepository.findByRestaurantId(restaurantId);
+        return products.stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Product getProductById(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+    public ProductResponseDTO getProductById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        return toResponse(product);
+    }
+
+    private ProductResponseDTO toResponse(Product product) {
+        ProductResponseDTO dto = mapper.map(product, ProductResponseDTO.class);
+        if (product.getRestaurant() != null) {
+            dto.setRestaurantId(product.getRestaurant().getId());
+        }
+        return dto;
     }
 }

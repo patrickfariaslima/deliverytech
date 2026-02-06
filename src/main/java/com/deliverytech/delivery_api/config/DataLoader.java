@@ -49,7 +49,23 @@ public class DataLoader {
             client2.setAddress("Avenida Brasil, 456, Rio de Janeiro, RJ");
             client2.setActive(true);
 
-            clientRepository.saveAll(Arrays.asList(client1, client2));
+            Client client3 = new Client();
+            client3.setName("Marina Rocha");
+            client3.setEmail("marina@gmail.com");
+            client3.setPhoneNumber("11922223333");
+            client3.setAddress("Rua Nova, 789, Curitiba, PR");
+            client3.setActive(true);
+
+            clientRepository.saveAll(Arrays.asList(client1, client2, client3));
+
+            System.out.println("Clientes ativos:");
+            clientRepository.findByActiveTrue()
+                .forEach(client -> System.out.println(" - " + client.getId() + " | " + client.getName()));
+
+            System.out.println("Clientes com 'a' no nome:");
+            clientRepository.findByNameContainingIgnoreCase("a")
+                .forEach(client -> System.out.println(" - " + client.getId() + " | " + client.getName()));
+
 
             Restaurant r1 = new Restaurant();
             r1.setName("Pizza");
@@ -71,6 +87,26 @@ public class DataLoader {
 
             restaurantRepository.saveAll(Arrays.asList(r1, r2));
 
+            System.out.println("Restaurantes ativos:");
+            restaurantRepository.findByActiveTrue()
+                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+
+            System.out.println("Restaurantes taxa <= 6:");
+            restaurantRepository.findByDeliveryFeeLessThanEqual(new BigDecimal("6.00"))
+                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+
+            System.out.println("Top 5 por nome:");
+            restaurantRepository.findTop5ByOrderByNameAsc()
+                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+
+            System.out.println("Restaurantes por categoria Pizzaria:");
+            restaurantRepository.findByCategory("Pizzaria")
+                .forEach(restaurant -> System.out.println(" - " + restaurant.getId() + " | " + restaurant.getName()));
+
+            System.out.println("Produtos por categoria Pizza:");
+            productRepository.findByCategory("Pizza")
+                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+
             Product p1 = new Product();
             p1.setName("Pizza de Calabresa");
             p1.setDescription("Deliciosa pizza de calabresa com borda recheada");
@@ -87,10 +123,48 @@ public class DataLoader {
             p2.setAvailable(true);
             p2.setRestaurant(r2);
 
+            Product p3 = new Product();
+            p3.setName("Pizza Margherita");
+            p3.setDescription("Mussarela, tomate e manjericão");
+            p3.setPrice(new BigDecimal("32.00"));
+            p3.setCategory("Pizza");
+            p3.setAvailable(true);
+            p3.setRestaurant(r1);
+
+            Product p4 = new Product();
+            p4.setName("Cheeseburger Duplo");
+            p4.setDescription("Dois hambúrgueres, cheddar e molho");
+            p4.setPrice(new BigDecimal("28.00"));
+            p4.setCategory("Hambúrguer");
+            p4.setAvailable(true);
+            p4.setRestaurant(r2);
+
+            Product p5 = new Product();
+            p5.setName("Batata Frita");
+            p5.setDescription("Porção grande");
+            p5.setPrice(new BigDecimal("15.00"));
+            p5.setCategory("Acompanhamento");
+            p5.setAvailable(true);
+            p5.setRestaurant(r2);
+
             List<Product> products = new ArrayList<>();
             products.add(p1);
             products.add(p2);
+            products.addAll(Arrays.asList(p3, p4, p5));
             productRepository.saveAll(products);
+
+            System.out.println("Produtos disponíveis:");
+            productRepository.findByAvailableTrue()
+                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+
+            System.out.println("Produtos preço <= 30:");
+            productRepository.findByPriceLessThanEqual(new BigDecimal("30.00"))
+                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+
+            System.out.println("Produtos do restaurante r1:");
+            productRepository.findByRestaurantId(r1.getId())
+                .forEach(product -> System.out.println(" - " + product.getId() + " | " + product.getName()));
+
 
             Order order1 = new Order();
             order1.setClient(client1);
@@ -112,6 +186,9 @@ public class DataLoader {
 
             orderRepository.save(order2);
 
+            System.out.println("Últimos 10 pedidos:");
+            orderRepository.findTop10ByOrderByOrderDateDesc()
+                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
 
             OrderedItem item1 = new OrderedItem();
             item1.setProduct(p1);
@@ -131,7 +208,42 @@ public class DataLoader {
 
             orderedItemRepository.save(item2);
 
+            System.out.println("Pedidos por período:");
+            orderRepository.findByOrderDateBetween(
+                java.time.LocalDateTime.now().minusDays(1),
+                java.time.LocalDateTime.now().plusDays(1)
+            ).forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+
+            System.out.println("Pedidos por status PENDING:");
+            orderRepository.findByStatus(OrdersStatus.PENDING)
+                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+
+            System.out.println("Pedidos por cliente client1:");
+            orderRepository.findByClientId(client1.getId())
+                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber()));
+
+            System.out.println("Pedidos com total > 10:");
+            orderRepository.findByTotalGreaterThan(new BigDecimal("10.00"))
+                .forEach(order -> System.out.println(" - " + order.getId() + " | " + order.getOrderNumber() + " | " + order.getTotal()));
+
+            System.out.println("Total vendas por restaurante:");
+                orderRepository.totalSalesByRestaurant()
+                    .forEach(report -> System.out.println(" - " + report.getRestaurant() + " | " + report.getTotalSales()));
+
+            System.out.println("Top produtos:");
+            orderRepository.topProducts()
+                .forEach(report -> System.out.println(" - " + report.getProductName() + " | " + report.getTotalOrders()));
+
+            System.out.println("Faturamento por categoria:");
+            orderRepository.revenueByCategory()
+                .forEach(report -> System.out.println(" - " + report.getCategory() + " | " + report.getTotalRevenue()));
+
+            System.out.println("Ranking clientes:");
+            orderRepository.rankingClients()
+                .forEach(report -> System.out.println(" - " + report.getClientName() + " | " + report.getTotalOrders()));
+
             System.out.println("Carregamento de dados concluído.");
+            
         };
     }
 }

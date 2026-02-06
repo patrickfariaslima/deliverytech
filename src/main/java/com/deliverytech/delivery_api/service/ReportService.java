@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.deliverytech.delivery_api.dto.ClientRankingProjection;
 import com.deliverytech.delivery_api.dto.TotalSalesByRestaurantDTO;
 import com.deliverytech.delivery_api.repository.OrderRepository;
 
@@ -15,10 +16,10 @@ public class ReportService {
     private final OrderRepository orderRepository;
 
     public List<TotalSalesByRestaurantDTO> totalSalesByRestaurant(){
-        return orderRepository.TotalSalesByRestaurant();
+        return orderRepository.totalSalesByRestaurant();
     }
 
-    public List<Object[]> rankingClients(){
+    public List<ClientRankingProjection> rankingClients(){
         return orderRepository.rankingClients();
     }
 }

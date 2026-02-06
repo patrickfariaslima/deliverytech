@@ -3,6 +3,7 @@ package com.deliverytech.delivery_api.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliverytech.delivery_api.dto.ClientRankingProjection;
 import com.deliverytech.delivery_api.dto.TotalSalesByRestaurantDTO;
 import com.deliverytech.delivery_api.service.ReportService;
 
@@ -25,7 +26,7 @@ public class ReportController {
     }
 
     @GetMapping("/ranking-clientes")
-    public List<Object[]> rankingClients() {
+    public List<ClientRankingProjection> rankingClients() {
         return reportService.rankingClients();
     }
 }
