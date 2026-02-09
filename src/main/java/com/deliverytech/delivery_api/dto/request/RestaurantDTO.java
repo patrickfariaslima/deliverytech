@@ -2,6 +2,7 @@ package com.deliverytech.delivery_api.dto.request;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -27,6 +28,7 @@ public class RestaurantDTO {
     @Pattern(regexp = "^[1-9]{2}(?:9[0-9]{8}|[2-5][0-9]{7})$", message = "Invalid phone number format. Format: DDNNNNNNNNN")
     private String phoneNumber;
 
-    @NotBlank(message = "Delivery fee cannot be blank")
+    @NotNull(message = "Delivery fee cannot be null")
+    @DecimalMin(value = "0.00", message = "Delivery fee must be >= 0")
     private BigDecimal deliveryFee;
 }

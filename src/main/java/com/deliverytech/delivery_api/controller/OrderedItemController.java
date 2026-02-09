@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deliverytech.delivery_api.model.OrderedItem;
 import com.deliverytech.delivery_api.service.OrderedItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/itens-pedidos")
+@Tag(name = "Itens de Pedido", description = "Endpoints de itens de pedido")
 public class OrderedItemController {
     private final OrderedItemService orderedItemService;
 
@@ -23,11 +27,15 @@ public class OrderedItemController {
     }
 
     @GetMapping("/pedidos/{orderId}")
+    @Operation(summary = "Buscar itens por pedido")
+    @ApiResponse(responseCode = "200", description = "Lista de itens")
     public ResponseEntity<List<OrderedItem>> findByOrderId(@PathVariable Long orderId) {
         return ResponseEntity.status(200).body(orderedItemService.findByOrderId(orderId));
     }
 
     @GetMapping("/itens/{productId}")
+    @Operation(summary = "Buscar itens por produto")
+    @ApiResponse(responseCode = "200", description = "Lista de itens")
     public ResponseEntity<List<OrderedItem>> findByProductId(@PathVariable Long productId) {
         return ResponseEntity.status(200).body(orderedItemService.findByProductId(productId));
     }

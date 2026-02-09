@@ -2,8 +2,9 @@ package com.deliverytech.delivery_api.dto.request;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,10 @@ public class ProductDTO {
     @NotBlank(message = "Product category is required")
     private String category;
 
-    @Positive(message = "Price must be a positive value")
-    @NotBlank(message = "Product price is required")
+    @NotNull(message = "Product price is required")
+    @DecimalMin(value = "0.01", message = "Price must be greater than zero")
     private BigDecimal price;
+
+    @NotNull(message = "Restaurant ID is required")
+    private Long restaurantId;
 }

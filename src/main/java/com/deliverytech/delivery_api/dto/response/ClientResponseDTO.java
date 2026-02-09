@@ -19,5 +19,5 @@ public class ClientResponseDTO {
 
     private boolean active;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime registeredAt;
 }

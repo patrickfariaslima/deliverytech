@@ -1,4 +1,4 @@
-package com.deliverytech.delivery_api.service;
+package com.deliverytech.delivery_api.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,49 +14,84 @@ import com.deliverytech.delivery_api.model.Product;
 import com.deliverytech.delivery_api.model.Restaurant;
 import com.deliverytech.delivery_api.repository.ProductRepository;
 import com.deliverytech.delivery_api.repository.RestaurantRepository;
+import com.deliverytech.delivery_api.service.api.ProductService;
 
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class ProductService {
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final RestaurantRepository restaurantRepository;
     private final ModelMapper mapper;
+    private static final String NOT_FOUND_MESSAGE = "Product not found";
 
-    public ProductService(ProductRepository productRepository, RestaurantRepository restaurantRepository, ModelMapper mapper) {
+    public ProductServiceImpl(ProductRepository productRepository, RestaurantRepository restaurantRepository, ModelMapper mapper) {
         this.productRepository = productRepository;
         this.restaurantRepository = restaurantRepository;
         this.mapper = mapper;
     }
 
-    public ProductResponseDTO createProduct(Long restaurantId, ProductDTO product) {
+    @Override
+    public ProductResponseDTO createProduct(ProductDTO product) {
         if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new BusinessException("Price must be greater than zero");
         }
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+        Restaurant restaurant = restaurantRepository.findById(product.getRestaurantId())
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
 
         Product newProduct = mapper.map(product, Product.class);
         newProduct.setAvailable(true);
         newProduct.setRestaurant(restaurant);
 
-        Product saved = productRepository.save(newProduct);
-        return toResponse(saved);
+        return toResponse(productRepository.save(newProduct));
     }
 
+    @Override
     public List<ProductResponseDTO> getProductsByRestaurant(Long restaurantId) {
-        List<Product> products = productRepository.findByRestaurantId(restaurantId);
+        List<Product> products = productRepository.findByRestaurantIdAndAvailableTrue(restaurantId);
         return products.stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    @Override
     public ProductResponseDTO getProductById(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+
+        if (!Boolean.TRUE.equals(product.getAvailable())) {
+            throw new BusinessException("Product is not available");
+        }
         return toResponse(product);
+    }
+
+    @Override
+    public ProductResponseDTO updateProduct(Long productId, ProductDTO dto) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setCategory(dto.getCategory());
+        product.setPrice(dto.getPrice());
+
+        return toResponse(productRepository.save(product));
+    }
+
+    @Override
+    public ProductResponseDTO setProductAvailability(Long productId, boolean available) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+
+        product.setAvailable(available);
+        return toResponse(productRepository.save(product));
+    }
+
+    @Override
+    public List<ProductResponseDTO> getProductsByCategory(String category) {
+        return productRepository.findByCategory(category).stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private ProductResponseDTO toResponse(Product product) {
