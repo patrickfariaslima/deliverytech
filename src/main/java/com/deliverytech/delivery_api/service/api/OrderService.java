@@ -16,4 +16,6 @@ public interface OrderService {
     OrderResponseDTO updateOrderStatus(Long orderId, OrdersStatus status);
     BigDecimal calculateOrderTotal(List<OrderedItemDTO> items);
     OrderResponseDTO cancelOrder(Long orderId);
+    List<OrderResponseDTO> listOrders(OrdersStatus status, String startDate, String endDate);
+    List<OrderResponseDTO> getOrdersByRestaurant(Long restaurantId);
 }

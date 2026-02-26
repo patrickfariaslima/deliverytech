@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "DeliveryTech API",
+    "description": "Collection completa da API DeliveryTech com todos os endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Restaurantes",
+      "item": [
+        {
+          "name": "Criar Restaurante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pizza Express\",\n  \"category\": \"Pizza\",\n  \"address\": \"Av. Paulista, 1000\",\n  \"phoneNumber\": \"11987654321\",\n  \"deliveryFee\": 5.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/restaurantes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "restaurantes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Restaurantes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/restaurantes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "restaurantes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Restaurante por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/restaurantes/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "restaurantes", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Produtos",
+      "item": [
+        {
+          "name": "Criar Produto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pizza Margherita\",\n  \"description\": \"Pizza com molho de tomate e mussarela\",\n  \"category\": \"Pizza\",\n  \"price\": 39.90,\n  \"restaurantId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/produtos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "produtos"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

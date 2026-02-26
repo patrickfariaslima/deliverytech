@@ -15,4 +15,6 @@ public interface RestaurantService {
     RestaurantResponseDTO updateRestaurant(Long restaurantId, RestaurantDTO dto);
     BigDecimal calculateDeliveryFee(Long restaurantId, String cep);
     List<ProductResponseDTO> getProductsByRestaurant(Long restaurantId);
+    void toggleRestaurantStatus(Long restaurantId);
+    List<RestaurantResponseDTO> getNearbyRestaurants(String cep);
 }

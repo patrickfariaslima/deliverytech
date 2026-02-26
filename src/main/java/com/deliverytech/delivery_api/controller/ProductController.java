@@ -8,6 +8,7 @@ import com.deliverytech.delivery_api.dto.request.ProductDTO;
 import com.deliverytech.delivery_api.dto.response.ProductResponseDTO;
 import com.deliverytech.delivery_api.service.api.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -68,4 +70,32 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductsByCategory(categoria));
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(
+        summary = "Remover produto",
+        description = "Remove um produto do sistema. Não é possível remover produtos que já foram pedidos."
+    )
+    @ApiResponse(responseCode = "204", description = "Produto removido com sucesso")
+    @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+    @ApiResponse(responseCode = "409", description = "Produto não pode ser removido - existe em pedidos")
+    public ResponseEntity<Void> deleteProduct(
+        @Parameter(description = "ID do produto", example = "1", required = true)
+        @PathVariable Long id
+    ) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/buscar")
+    @Operation(
+        summary = "Buscar produtos por nome",
+        description = "Realiza busca textual de produtos pelo nome (case-insensitive)"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de produtos encontrados")
+    public ResponseEntity<List<ProductResponseDTO>> searchProductsByName(
+        @Parameter(description = "Nome ou parte do nome do produto", example = "Pizza", required = true)
+        @RequestParam String nome
+    ) {
+        return ResponseEntity.ok(productService.searchProductsByName(nome));
+    }
 }

@@ -9,8 +9,8 @@ import com.deliverytech.delivery_api.service.api.ProductService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +20,7 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ProductService productService;
 
     @Test
@@ -30,7 +30,7 @@ class ProductControllerTest {
 
         mockMvc.perform(post("/api/produtos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"P\",\"description\":\"Descricao\",\"category\":\"Cat\",\"price\":10.0,\"restaurantId\":1}"))
+                .content("{\"name\":\"Pizza Margherita\",\"description\":\"Descricao\",\"category\":\"Pizza\",\"price\":10.0,\"restaurantId\":1}"))
             .andExpect(status().isCreated());
     }
 

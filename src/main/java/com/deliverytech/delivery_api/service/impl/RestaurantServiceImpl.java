@@ -93,4 +93,20 @@ public class RestaurantServiceImpl implements RestaurantService {
             .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         return productService.getProductsByRestaurant(restaurantId);
     }
+
+    @Override
+    public void toggleRestaurantStatus(Long restaurantId) {
+        Restaurant restaurant = repository.findById(restaurantId)
+            .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+        restaurant.setActive(!restaurant.getActive());
+        repository.save(restaurant);
+    }
+
+    @Override
+    public List<RestaurantResponseDTO> getNearbyRestaurants(String cep) {
+        List<Restaurant> restaurants = repository.findByActiveTrueOrderByRatingDesc();
+        return restaurants.stream()
+            .map(r -> mapper.map(r, RestaurantResponseDTO.class))
+            .toList();
+    }
 }

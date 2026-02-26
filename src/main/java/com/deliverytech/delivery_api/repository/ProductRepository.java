@@ -19,4 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
     List<Product> findByRestaurantIdAndAvailableTrue(Long restaurantId);
 
     List<Product> findByPriceLessThanEqual(BigDecimal price);
+
+    List<Product> findByNameContainingIgnoreCase(String name);
 }

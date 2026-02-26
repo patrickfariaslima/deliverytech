@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.service.impl;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -176,6 +177,37 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrdersStatus.CANCELED);
 
         return mapper.map(orderRepository.save(order), OrderResponseDTO.class);
+    }
+
+    @Override
+    public List<OrderResponseDTO> listOrders(OrdersStatus status, String startDate, String endDate) {
+        List<Order> orders;
+        
+        if (status != null && startDate != null && endDate != null) {
+            LocalDateTime start = LocalDateTime.parse(startDate + "T00:00:00");
+            LocalDateTime end = LocalDateTime.parse(endDate + "T23:59:59");
+            orders = orderRepository.findReportByPeriodAndStatus(status, start, end);
+        } else if (status != null) {
+            orders = orderRepository.findByStatus(status);
+        } else if (startDate != null && endDate != null) {
+            LocalDateTime start = LocalDateTime.parse(startDate + "T00:00:00");
+            LocalDateTime end = LocalDateTime.parse(endDate + "T23:59:59");
+            orders = orderRepository.findByOrderDateBetween(start, end);
+        } else {
+            orders = orderRepository.findAll();
+        }
+        
+        return orders.stream()
+            .map(o -> mapper.map(o, OrderResponseDTO.class))
+            .toList();
+    }
+
+    @Override
+    public List<OrderResponseDTO> getOrdersByRestaurant(Long restaurantId) {
+        List<Order> orders = orderRepository.findByRestaurantId(restaurantId);
+        return orders.stream()
+            .map(o -> mapper.map(o, OrderResponseDTO.class))
+            .toList();
     }
 
     private boolean isValidTransition(OrdersStatus current, OrdersStatus next) {

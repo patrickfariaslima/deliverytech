@@ -10,6 +10,7 @@ import com.deliverytech.delivery_api.dto.response.OrderResponseDTO;
 import com.deliverytech.delivery_api.enums.OrdersStatus;
 import com.deliverytech.delivery_api.service.api.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -69,5 +70,36 @@ public class OrderController {
     @ApiResponse(responseCode = "200", description = "Total calculado")
     public ResponseEntity<BigDecimal> calculateTotal(@RequestBody List<OrderedItemDTO> items) {
         return ResponseEntity.ok(orderService.calculateOrderTotal(items));
+    }
+
+    @GetMapping
+    @Operation(
+        summary = "Listar pedidos",
+        description = "Lista todos os pedidos com filtros opcionais de status e período"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de pedidos (pode estar vazia)")
+    public ResponseEntity<List<OrderResponseDTO>> listOrders(
+        @Parameter(description = "Filtrar por status do pedido") 
+        @RequestParam(required = false) OrdersStatus status,
+        @Parameter(description = "Data inicial no formato yyyy-MM-dd", example = "2024-01-01")
+        @RequestParam(required = false) String startDate,
+        @Parameter(description = "Data final no formato yyyy-MM-dd", example = "2024-12-31")
+        @RequestParam(required = false) String endDate
+    ) {
+        return ResponseEntity.ok(orderService.listOrders(status, startDate, endDate));
+    }
+
+    @GetMapping("/restaurantes/{restauranteId}/pedidos")
+    @Operation(
+        summary = "Pedidos do restaurante",
+        description = "Retorna todos os pedidos de um restaurante específico"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de pedidos do restaurante")
+    @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
+    public ResponseEntity<List<OrderResponseDTO>> getRestaurantOrders(
+        @Parameter(description = "ID do restaurante", example = "1", required = true)
+        @PathVariable Long restauranteId
+    ) {
+        return ResponseEntity.ok(orderService.getOrdersByRestaurant(restauranteId));
     }
 }

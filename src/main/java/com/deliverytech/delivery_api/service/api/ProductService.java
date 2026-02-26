@@ -12,4 +12,6 @@ public interface ProductService {
     ProductResponseDTO updateProduct(Long productId, ProductDTO dto);
     ProductResponseDTO setProductAvailability(Long productId, boolean available);
     List<ProductResponseDTO> getProductsByCategory(String category);
+    void deleteProduct(Long productId);
+    List<ProductResponseDTO> searchProductsByName(String name);
 }

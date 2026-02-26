@@ -101,4 +101,19 @@ public class ProductServiceImpl implements ProductService {
         }
         return dto;
     }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+        productRepository.delete(product);
+    }
+
+    @Override
+    public List<ProductResponseDTO> searchProductsByName(String name) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+        return products.stream()
+                .map(p -> mapper.map(p, ProductResponseDTO.class))
+                .toList();
+    }
 }

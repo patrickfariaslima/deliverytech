@@ -12,6 +12,7 @@ import com.deliverytech.delivery_api.dto.response.ProductResponseDTO;
 import com.deliverytech.delivery_api.dto.response.RestaurantResponseDTO;
 import com.deliverytech.delivery_api.service.api.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,6 +21,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -84,5 +86,33 @@ public class RestaurantController {
     public ResponseEntity<List<ProductResponseDTO>> getProductsByRestaurant(@PathVariable Long restauranteId) {
         return ResponseEntity.ok(restaurantService.getProductsByRestaurant(restauranteId));
     }
-    
+
+    @PatchMapping("/{id}/status")
+    @Operation(
+        summary = "Ativar/desativar restaurante",
+        description = "Alterna o status de ativo/inativo do restaurante"
+    )
+    @ApiResponse(responseCode = "204", description = "Status atualizado com sucesso")
+    @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
+    public ResponseEntity<Void> toggleRestaurantStatus(
+        @Parameter(description = "ID do restaurante", example = "1", required = true)
+        @PathVariable Long id
+    ) {
+        restaurantService.toggleRestaurantStatus(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/proximos/{cep}")
+    @Operation(
+        summary = "Buscar restaurantes próximos",
+        description = "Retorna restaurantes ativos próximos ao CEP informado, ordenados por avaliação"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de restaurantes próximos")
+    @ApiResponse(responseCode = "400", description = "CEP inválido")
+    public ResponseEntity<List<RestaurantResponseDTO>> getNearbyRestaurants(
+        @Parameter(description = "CEP para busca de proximidade", example = "01310100", required = true)
+        @PathVariable String cep
+    ) {
+        return ResponseEntity.ok(restaurantService.getNearbyRestaurants(cep));
+    }
 }

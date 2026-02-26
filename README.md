@@ -1,40 +1,38 @@
+# 🚀 DeliveryTech API
 
-# Delivery Tech API
-Sistema de delivery desenvolvido com Spring Boot e Java 21.
+API REST completa para sistema de delivery de comida, desenvolvida com Spring Boot 3.5.9 e Java 21.
 
-## 🚀 Tecnologias
-- **Java 21 LTS** (versão mais recente)
-- Spring Boot 3.5.9
-- Spring Web
-- Spring Data JPA
-- H2 Database
-- Maven
+## 📋 Funcionalidades
 
-## ⚡ Recursos Modernos Utilizados
-- Records (Java 14+)
-- Text Blocks (Java 15+)
-- Pattern Matching (Java 17+)
-- Virtual Threads (Java 21)
+- ✅ **Gerenciamento de Clientes**: Cadastro, consulta, atualização e inativação
+- ✅ **Gerenciamento de Restaurantes**: CRUD completo com categorias e controle de status
+- ✅ **Catálogo de Produtos**: Produtos por restaurante com categorias e disponibilidade
+- ✅ **Processamento de Pedidos**: Criação, atualização de status e cálculo de totais
+- ✅ **Relatórios e Estatísticas**: Vendas, rankings e análises de desempenho
+- ✅ **Documentação Swagger/OpenAPI**: Documentação interativa completa
+- ✅ **Tratamento de Erros**: Respostas padronizadas e validações
 
-## 🏃‍♂️ Como executar
-1. **Pré-requisitos:** JDK 21 instalado
-2. Clone o repositório
-3. Execute: `./mvnw spring-boot:run`
-4. Acesse: http://localhost:8080/health
+## 🛠️ Tecnologias Utilizadas
 
-## 📋 Endpoints
-- GET /health - Status da aplicação (inclui versão Java)
-- GET /info - Informações da aplicação
-- GET /h2-console - Console do banco H2
+- **Java 21 LTS** - Linguagem de programação
+- **Spring Boot 3.5.9** - Framework
+- **Spring Data JPA** - Persistência de dados
+- **H2 Database** - Banco de dados em memória
+- **Lombok** - Redução de boilerplate
+- **ModelMapper** - Mapeamento de objetos
+- **SpringDoc OpenAPI** - Documentação Swagger
+- **Bean Validation** - Validação de dados
+- **Maven** - Gerenciamento de dependências
 
-## 🔧 Configuração
-- Porta: 8080
-- Banco: H2 em memória
-- Profile: development
+## 🚀 Como Executar
 
-## 👨‍💻 Desenvolvedor
-Patrick Farias Lima - Turma 2602 - Arquitetura de sistema
-Desenvolvido com JDK 21 e Spring Boot 3.5.9
+### Pré-requisitos
+- JDK 21+ instalado
+- Maven 3.8+ instalado
 
-## 💻 Repositório GitHub
-https://github.com/patrickfariaslima/deliverytech
+### Passos
+
+1. **Clone o repositório**
+```bash
+git clone https://github.com/patrickfariaslima/deliverytech.git
+cd delivery-api
