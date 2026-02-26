@@ -42,6 +42,15 @@ public class Restaurant {
 
     private Boolean active;
 
+    @Column(name = "working_hours")
+    private String workingHours;
+
+    @Column(name = "delivery_time_minutes")
+    private Integer deliveryTimeMinutes;
+
+    @Column(name = "cep")
+    private String cep;
+
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
