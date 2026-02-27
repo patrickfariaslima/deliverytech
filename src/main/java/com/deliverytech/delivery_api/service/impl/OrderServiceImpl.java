@@ -210,6 +210,32 @@ public class OrderServiceImpl implements OrderService {
             .toList();
     }
 
+    @Override
+    public List<OrderResponseDTO> getMyOrders() {
+        com.deliverytech.delivery_api.model.User currentUser = com.deliverytech.delivery_api.security.SecurityUtils.getCurrentUser();
+        if (currentUser == null) {
+            throw new BusinessException("No authenticated user found");
+        }
+        
+        List<Order> orders = orderRepository.findAll().stream()
+            .filter(order -> order.getClient().getEmail().equals(currentUser.getEmail()))
+            .toList();
+        
+        return orders.stream()
+            .map(o -> mapper.map(o, OrderResponseDTO.class))
+            .toList();
+    }
+
+    @Override
+    public List<OrderResponseDTO> getMyRestaurantOrders() {
+        com.deliverytech.delivery_api.model.User currentUser = com.deliverytech.delivery_api.security.SecurityUtils.getCurrentUser();
+        if (currentUser == null || currentUser.getRestaurantId() == null) {
+            throw new BusinessException("No authenticated restaurant user found");
+        }
+        
+        return getOrdersByRestaurant(currentUser.getRestaurantId());
+    }
+
     private boolean isValidTransition(OrdersStatus current, OrdersStatus next) {
         if (current == OrdersStatus.PENDING) {
             return next == OrdersStatus.CONFIRMED || next == OrdersStatus.CANCELED;
@@ -217,6 +243,36 @@ public class OrderServiceImpl implements OrderService {
         if (current == OrdersStatus.CONFIRMED) {
             return next == OrdersStatus.DELIVERED;
         }
+        return false;
+    }
+
+    @Override
+    public boolean canAccess(Long orderId) {
+        com.deliverytech.delivery_api.model.User currentUser = com.deliverytech.delivery_api.security.SecurityUtils.getCurrentUser();
+        if (currentUser == null) {
+            return false;
+        }
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+
+        
+        if (currentUser.getRole() == com.deliverytech.delivery_api.enums.UserRole.ADMIN) {
+            return true;
+        }
+
+        
+        if (currentUser.getRole() == com.deliverytech.delivery_api.enums.UserRole.CLIENT) {
+            
+            
+            return true;
+        }
+
+        
+        if (currentUser.getRole() == com.deliverytech.delivery_api.enums.UserRole.RESTAURANT && currentUser.getRestaurantId() != null) {
+            return order.getRestaurant().getId().equals(currentUser.getRestaurantId());
+        }
+
         return false;
     }
 }

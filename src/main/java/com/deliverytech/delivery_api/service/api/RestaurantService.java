@@ -17,4 +17,5 @@ public interface RestaurantService {
     List<ProductResponseDTO> getProductsByRestaurant(Long restaurantId);
     void toggleRestaurantStatus(Long restaurantId);
     List<RestaurantResponseDTO> getNearbyRestaurants(String cep);
+    boolean isOwner(Long restaurantId);
 }

@@ -116,4 +116,15 @@ public class ProductServiceImpl implements ProductService {
                 .map(p -> mapper.map(p, ProductResponseDTO.class))
                 .toList();
     }
+
+    @Override
+    public boolean isOwner(Long productId) {
+        com.deliverytech.delivery_api.model.User currentUser = com.deliverytech.delivery_api.security.SecurityUtils.getCurrentUser();
+        if (currentUser == null || currentUser.getRestaurantId() == null) {
+            return false;
+        }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+        return product.getRestaurant().getId().equals(currentUser.getRestaurantId());
+    }
 }

@@ -3,6 +3,7 @@ package com.deliverytech.delivery_api.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deliverytech.delivery_api.dto.request.ProductDTO;
 import com.deliverytech.delivery_api.dto.response.ProductResponseDTO;
@@ -36,6 +37,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('RESTAURANT') or hasRole('ADMIN')")
     @Operation(summary = "Cadastrar produto")
     @ApiResponse(responseCode = "201", description = "Produto criado")
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductDTO product) {
@@ -50,6 +52,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @productServiceImpl.isOwner(#id)")
     @Operation(summary = "Atualizar produto")
     @ApiResponse(responseCode = "200", description = "Produto atualizado")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDTO product) {
@@ -57,6 +60,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}/disponibilidade")
+    @PreAuthorize("hasRole('ADMIN') or @productServiceImpl.isOwner(#id)")
     @Operation(summary = "Alterar disponibilidade do produto")
     @ApiResponse(responseCode = "200", description = "Disponibilidade alterada")
     public ResponseEntity<ProductResponseDTO> setProductAvailability(@PathVariable Long id, @RequestParam boolean available) {
@@ -71,6 +75,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @productServiceImpl.isOwner(#id)")
     @Operation(
         summary = "Remover produto",
         description = "Remove um produto do sistema. Não é possível remover produtos que já foram pedidos."

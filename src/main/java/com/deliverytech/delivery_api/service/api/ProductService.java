@@ -14,4 +14,5 @@ public interface ProductService {
     List<ProductResponseDTO> getProductsByCategory(String category);
     void deleteProduct(Long productId);
     List<ProductResponseDTO> searchProductsByName(String name);
+    boolean isOwner(Long productId);
 }

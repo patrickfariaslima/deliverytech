@@ -1,3 +1,13 @@
+-- Users (password for all: "123456" encoded with BCrypt)
+-- Generated with: BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10); encoder.encode("123456")
+INSERT INTO users (id, name, email, password, role, active, created_at, restaurant_id) VALUES
+(1, 'Admin System', 'admin@delivery.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMIN', true, CURRENT_TIMESTAMP, null),
+(2, 'João Client', 'joao@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'CLIENT', true, CURRENT_TIMESTAMP, null),
+(3, 'Pizza Palace Owner', 'pizza@palace.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'RESTAURANT', true, CURRENT_TIMESTAMP, 1),
+(4, 'Carlos Delivery', 'carlos@delivery.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'DELIVERY', true, CURRENT_TIMESTAMP, null),
+(5, 'Burger House Owner', 'burger@house.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'RESTAURANT', true, CURRENT_TIMESTAMP, 2),
+(6, 'Sushi Master Owner', 'sushi@master.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'RESTAURANT', true, CURRENT_TIMESTAMP, 3);
+
 INSERT INTO clients (name, email, phone_number, address, registered_at, active) VALUES
 ('João Silva', 'joao@email.com', '(11) 99999-1111', 'Rua A, 123 - São Paulo/SP', CURRENT_TIMESTAMP, true),
 ('Maria Santos', 'maria@email.com', '(11) 99999-2222', 'Rua B, 456 - São Paulo/SP', CURRENT_TIMESTAMP, true),

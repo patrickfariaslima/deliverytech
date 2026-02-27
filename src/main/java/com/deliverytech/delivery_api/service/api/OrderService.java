@@ -18,4 +18,7 @@ public interface OrderService {
     OrderResponseDTO cancelOrder(Long orderId);
     List<OrderResponseDTO> listOrders(OrdersStatus status, String startDate, String endDate);
     List<OrderResponseDTO> getOrdersByRestaurant(Long restaurantId);
+    List<OrderResponseDTO> getMyOrders();
+    List<OrderResponseDTO> getMyRestaurantOrders();
+    boolean canAccess(Long orderId);
 }

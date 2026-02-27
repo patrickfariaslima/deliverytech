@@ -109,4 +109,14 @@ public class RestaurantServiceImpl implements RestaurantService {
             .map(r -> mapper.map(r, RestaurantResponseDTO.class))
             .toList();
     }
+
+    @Override
+    public boolean isOwner(Long restaurantId) {
+        com.deliverytech.delivery_api.model.User currentUser = com.deliverytech.delivery_api.security.SecurityUtils.getCurrentUser();
+        if (currentUser == null) {
+            return false;
+        }
+        return currentUser.getRestaurantId() != null && 
+               currentUser.getRestaurantId().equals(restaurantId);
+    }
 }

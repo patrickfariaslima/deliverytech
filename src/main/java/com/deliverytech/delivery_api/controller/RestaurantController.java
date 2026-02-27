@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,6 +39,7 @@ public class RestaurantController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Cadastrar restaurante")
     @ApiResponse(responseCode = "201", description = "Restaurante criado")
     public ResponseEntity<RestaurantResponseDTO> createRestaurant(@Valid @RequestBody RestaurantDTO restaurant) {
@@ -67,6 +69,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('RESTAURANT') and @restaurantServiceImpl.isOwner(#id))")
     @Operation(summary = "Atualizar restaurante")
     @ApiResponse(responseCode = "200", description = "Restaurante atualizado")
     public ResponseEntity<RestaurantResponseDTO> updateRestaurant(@PathVariable Long id, @Valid @RequestBody RestaurantDTO restaurant) {    
@@ -88,6 +91,7 @@ public class RestaurantController {
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
         summary = "Ativar/desativar restaurante",
         description = "Alterna o status de ativo/inativo do restaurante"

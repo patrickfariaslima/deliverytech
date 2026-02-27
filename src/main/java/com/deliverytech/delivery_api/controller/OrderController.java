@@ -3,6 +3,7 @@ package com.deliverytech.delivery_api.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deliverytech.delivery_api.dto.request.OrderDTO;
 import com.deliverytech.delivery_api.dto.request.OrderedItemDTO;
@@ -38,6 +39,7 @@ public class OrderController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('CLIENT')")
     @Operation(summary = "Criar pedido")
     @ApiResponse(responseCode = "201", description = "Pedido criado")
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderDTO order) {
@@ -45,6 +47,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("@orderServiceImpl.canAccess(#id)")
     @Operation(summary = "Buscar pedido por ID")
     @ApiResponse(responseCode = "200", description = "Pedido encontrado")
     public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable Long id) {
@@ -52,6 +55,7 @@ public class OrderController {
     }
     
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT')")
     @Operation(summary = "Atualizar status do pedido")
     @ApiResponse(responseCode = "200", description = "Status atualizado")
     public ResponseEntity<OrderResponseDTO> updateOrderStatus(@PathVariable Long id, @RequestParam OrdersStatus status) {
@@ -59,6 +63,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('CLIENT')")
     @Operation(summary = "Cancelar pedido")
     @ApiResponse(responseCode = "200", description = "Pedido cancelado")
     public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Long id) {
@@ -72,7 +77,32 @@ public class OrderController {
         return ResponseEntity.ok(orderService.calculateOrderTotal(items));
     }
 
+    @GetMapping("/meus")
+    @PreAuthorize("hasRole('CLIENT')")
+    @Operation(
+        summary = "Meus pedidos",
+        description = "Retorna todos os pedidos do cliente logado"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de pedidos do cliente")
+    @ApiResponse(responseCode = "401", description = "Não autenticado")
+    public ResponseEntity<List<OrderResponseDTO>> getMyOrders() {
+        return ResponseEntity.ok(orderService.getMyOrders());
+    }
+
+    @GetMapping("/restaurante")
+    @PreAuthorize("hasRole('RESTAURANT')")
+    @Operation(
+        summary = "Pedidos do meu restaurante",
+        description = "Retorna todos os pedidos recebidos pelo restaurante do usuário logado"
+    )
+    @ApiResponse(responseCode = "200", description = "Lista de pedidos do restaurante")
+    @ApiResponse(responseCode = "401", description = "Não autenticado")
+    public ResponseEntity<List<OrderResponseDTO>> getMyRestaurantOrders() {
+        return ResponseEntity.ok(orderService.getMyRestaurantOrders());
+    }
+
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
         summary = "Listar pedidos",
         description = "Lista todos os pedidos com filtros opcionais de status e período"
@@ -90,6 +120,7 @@ public class OrderController {
     }
 
     @GetMapping("/restaurantes/{restauranteId}/pedidos")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('RESTAURANT') and @restaurantServiceImpl.isOwner(#restauranteId))")
     @Operation(
         summary = "Pedidos do restaurante",
         description = "Retorna todos os pedidos de um restaurante específico"
