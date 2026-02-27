@@ -8,6 +8,7 @@ import java.util.List;
 import com.deliverytech.delivery_api.enums.OrdersStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,6 +29,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "orders")
+@Schema(description = "Entidade representando um pedido")
 public class Order {
     
     @Id

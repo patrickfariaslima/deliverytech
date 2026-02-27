@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/itens-pedidos")
+@RequestMapping("/api/itens-pedidos")
 @Tag(name = "Itens de Pedido", description = "Endpoints de itens de pedido")
 public class OrderedItemController {
     private final OrderedItemService orderedItemService;

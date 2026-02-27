@@ -3,16 +3,22 @@ package com.deliverytech.delivery_api.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
 import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
+    
+    private static final String SECURITY_SCHEME_NAME = "Bearer Authentication";
+    
     @Bean
     public OpenAPI deliveryApiOpenAPI() {
         return new OpenAPI()
@@ -29,12 +35,31 @@ public class OpenApiConfig {
                     - 🍕 **Produtos**: Catálogo completo de produtos e categorias
                     - 📦 **Pedidos**: Processamento e acompanhamento de pedidos
                     - 📊 **Relatórios**: Análises de vendas e estatísticas
+                    - 🔐 **Autenticação**: Sistema de autenticação JWT
+                    
+                    ## 🔐 Autenticação
+                    
+                    A maioria dos endpoints requer autenticação via JWT (JSON Web Token).
+                    
+                    ### Como autenticar:
+                    1. Faça login através do endpoint `/api/auth/login`
+                    2. Copie o token JWT retornado na resposta
+                    3. Clique no botão "Authorize" no topo desta página
+                    4. Cole o token no campo (não precisa adicionar "Bearer")
+                    5. Clique em "Authorize" e depois "Close"
+                    
+                    ### Roles disponíveis:
+                    - `CLIENT`: Cliente comum que pode fazer pedidos
+                    - `RESTAURANT`: Restaurante que pode gerenciar produtos e ver pedidos
+                    - `ADMIN`: Administrador com acesso total ao sistema
                     
                     ## 🔐 Códigos HTTP Utilizados
                     - `200 OK`: Requisição bem-sucedida
                     - `201 Created`: Recurso criado com sucesso
                     - `204 No Content`: Operação bem-sucedida sem retorno de dados
                     - `400 Bad Request`: Dados de entrada inválidos
+                    - `401 Unauthorized`: Não autenticado ou token inválido
+                    - `403 Forbidden`: Sem permissão para acessar o recurso
                     - `404 Not Found`: Recurso não encontrado
                     - `409 Conflict`: Conflito de dados (ex: duplicação)
                     - `500 Internal Server Error`: Erro interno do servidor
@@ -61,6 +86,17 @@ public class OpenApiConfig {
                 new Server()
                     .url("https://api.deliverytech.com")
                     .description("Servidor de Produção")
-            ));
+            ))
+            .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
+            .components(new Components()
+                .addSecuritySchemes(SECURITY_SCHEME_NAME,
+                    new SecurityScheme()
+                        .name(SECURITY_SCHEME_NAME)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .description("Informe o token JWT obtido no endpoint /api/auth/login")
+                )
+            );
     }
 }

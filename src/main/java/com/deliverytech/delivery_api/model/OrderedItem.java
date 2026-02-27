@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,6 +21,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "ordered_items")
+@Schema(description = "Entidade representando um item de pedido")
 public class OrderedItem {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
